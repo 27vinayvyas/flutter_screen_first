@@ -57,15 +57,12 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0.0,
       ),
       body: SafeArea(
-          child: Padding(
-        padding: EdgeInsets.all(0),
         child: Column(
           children: <Widget>[
             Expanded(
               flex: 1,
-              //elevation: 1,
               child: Column(children: <Widget>[
-                new DartPicker(),
+                new DatePicker(),
                 Expanded(
                   child: Container(
                       padding: EdgeInsets.all(10),
@@ -73,10 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ]), // _chart("Charts", "55", "chart")),
             ),
-            listView(),
+            new listView(),
           ],
         ),
-      )),
+      ),
       bottomNavigationBar: new bottomNavBar(),
     );
   }

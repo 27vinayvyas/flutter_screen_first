@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class addTransection extends StatefulWidget {
   @override
@@ -7,16 +7,41 @@ class addTransection extends StatefulWidget {
 }
 
 class _addTransectionState extends State<addTransection> {
+  String name, source;
+  int amount;
+
+  getName(name) {
+    this.name = name;
+  }
+
+  getSource(source) {
+    this.source = source;
+  }
+
+  getAmount(amount) {
+    this.amount = int.parse(amount);
+  }
+
   createEntry() {
-    //  DocumentReference documentReference =
-    //      Firestore.instance.collection("MyStudents").document("name");
+    DocumentReference documentReference =
+        Firestore.instance.collection("Transections").document();
+
+    Map<String, dynamic> entry = {
+      "Name": name,
+      "Source": source,
+      "amount": amount,
+    };
+    //total = total + amount;
+    //print("total" + total.toString());
+    documentReference
+        .setData(entry); //.whenComplete(() => print("$name created"));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Second Route"),
+          title: Text("Add Transection"),
         ),
         body: Column(
           children: <Widget>[
@@ -30,7 +55,7 @@ class _addTransectionState extends State<addTransection> {
                         borderSide:
                             BorderSide(color: Colors.purple, width: 2))),
                 onChanged: (String name) {
-                  //getName(name);
+                  getName(name);
                 },
               ),
             ),
@@ -38,13 +63,27 @@ class _addTransectionState extends State<addTransection> {
               padding: EdgeInsets.all(8),
               child: TextFormField(
                 decoration: InputDecoration(
-                    labelText: "Name",
+                    labelText: "Source",
                     fillColor: Colors.white,
                     focusedBorder: OutlineInputBorder(
                         borderSide:
                             BorderSide(color: Colors.purple, width: 2))),
-                onChanged: (String name) {
-                  //getName(name);
+                onChanged: (String source) {
+                  getSource(source);
+                },
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: TextFormField(
+                decoration: InputDecoration(
+                    labelText: "Amount",
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.purple, width: 2))),
+                onChanged: (String amount) {
+                  getAmount(amount);
                 },
               ),
             ),
@@ -63,6 +102,7 @@ class _addTransectionState extends State<addTransection> {
                     )
                   ],
                 )),
+            //RaisedButton(onPressed: submit())
           ],
         )
 
@@ -77,3 +117,18 @@ class _addTransectionState extends State<addTransection> {
         );
   }
 }
+/*
+class SingleTransection {
+  String name;
+  String source;
+  int amount;
+  static int total = 0;
+  SingleTransection(name, sources, amount) {
+    this.name = name;
+    this.source = sources;
+    this.amount = amount;
+    total = total + amount;
+    print(SingleTransection.total);
+  }
+}
+*/

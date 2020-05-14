@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "524543366300",
+    "firebase_url": "https://stackfirst-8ad02.firebaseio.com",
+    "project_id": "stackfirst-8ad02",
+    "storage_bucket": "stackfirst-8ad02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524543366300:android:9e7eb8fc1a3d36d69cc959",
+        "android_client_info": {
+          "package_name": "com.example.submission_first"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "524543366300-f92hprali9gt942lin8gprp7dr4sup98.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsOO02XdxAd9P6c_V9oExD0Prt9hZh4Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "524543366300-f92hprali9gt942lin8gprp7dr4sup98.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

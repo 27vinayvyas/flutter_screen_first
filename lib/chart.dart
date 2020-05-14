@@ -1,4 +1,3 @@
-/// Example of a stacked area chart.
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
@@ -8,11 +7,9 @@ class StackedAreaLineCharts extends StatelessWidget {
 
   StackedAreaLineCharts(this.seriesList, {this.animate});
 
-  /// Creates a [LineChart] with sample data and no transition.
   factory StackedAreaLineCharts.withSampleData() {
     return new StackedAreaLineCharts(
       _createSampleData(),
-      // Disable animations for image tests.
       animate: false,
     );
   }
@@ -41,20 +38,19 @@ class StackedAreaLineCharts extends StatelessWidget {
     ];
     return [
       new charts.Series<LinearSales, int>(
-        id: 'Desktop',
+        id: 'Expenditure',
         colorFn: (_, __) => charts.MaterialPalette.purple.shadeDefault,
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales,
+        domainFn: (LinearSales sales, _) => sales.day,
+        measureFn: (LinearSales sales, _) => sales.expense,
         data: myFakeDesktopData,
       ),
     ];
   }
 }
 
-/// Sample linear data type.
 class LinearSales {
-  final int year;
-  final int sales;
+  final int day;
+  final int expense;
 
-  LinearSales(this.year, this.sales);
+  LinearSales(this.day, this.expense);
 }

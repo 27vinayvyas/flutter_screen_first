@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-class DartPicker extends StatefulWidget {
-  DartPicker({Key key}) : super(key: key);
+class DatePicker extends StatefulWidget {
+  DatePicker({Key key}) : super(key: key);
 
   @override
-  _DartPickerState createState() => _DartPickerState();
+  _DatePickerState createState() => _DatePickerState();
 }
 
-class _DartPickerState extends State<DartPicker> {
+class _DatePickerState extends State<DatePicker> {
   static DateTime selectedDate = DateTime.now();
 
   Future<Null> _selectDate(BuildContext context) async {
