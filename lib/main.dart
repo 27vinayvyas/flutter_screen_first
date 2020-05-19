@@ -1,11 +1,24 @@
+//import 'dart:js';
+
 import 'package:flutter/material.dart';
+import 'package:submission_first/notifier/date_notifier.dart';
 import './listView.dart';
 import './chart.dart';
 import './bottomNavBar.dart';
-import './model.dart';
+import './Firebase.dart';
 import './datePicker.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Date_Notifier()),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -31,30 +44,38 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        leading: Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-        ),
-        title: Text("Transections",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(
-              Icons.add,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => addTransection()),
-              );
-            },
+      //backgroundColor: Colors.grey[200],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(65),
+        child: AppBar(
+          leading: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
           ),
-        ],
-        backgroundColor: Colors.grey[200],
-        elevation: 0.0,
+          title: Row(children: <Widget>[
+            Spacer(),
+            Text("Transections",
+                style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold)),
+            Spacer()
+          ]),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => addTransection()),
+                );
+              },
+            ),
+          ],
+          backgroundColor: Color(0xffFBFAFD),
+          elevation: 0.0,
+        ),
       ),
       body: SafeArea(
         child: Column(
@@ -62,11 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               flex: 1,
               child: Column(children: <Widget>[
-                new DatePicker(),
+                new DatePickerBar(),
                 Expanded(
                   child: Container(
-                      padding: EdgeInsets.all(10),
-                      child: new StackedAreaLineCharts.withSampleData()),
+                      height: 50,
+                      //padding: EdgeInsets.all(10),
+                      child: new LineChartSample2()),
                 ),
               ]), // _chart("Charts", "55", "chart")),
             ),

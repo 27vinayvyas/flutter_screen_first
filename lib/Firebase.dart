@@ -6,6 +6,8 @@ class addTransection extends StatefulWidget {
   _addTransectionState createState() => _addTransectionState();
 }
 
+int total = 0;
+
 class _addTransectionState extends State<addTransection> {
   String name, source;
   int amount;
@@ -31,17 +33,30 @@ class _addTransectionState extends State<addTransection> {
       "Source": source,
       "amount": amount,
     };
-    //total = total + amount;
-    //print("total" + total.toString());
+
     documentReference
         .setData(entry); //.whenComplete(() => print("$name created"));
+
+    DocumentReference documentRef =
+        Firestore.instance.collection("Transections").document("0");
+    documentRef.get().then((datasnapshot) {
+      total = datasnapshot.data["Total"];
+      total = total + amount;
+      print("kjvdnv" + total.toString());
+      documentRef.setData({"Total": total});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Add Transection"),
+          title: Text(
+            "Add Transection",
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.grey[200],
+          elevation: 0.0,
         ),
         body: Column(
           children: <Widget>[
@@ -102,7 +117,6 @@ class _addTransectionState extends State<addTransection> {
                     )
                   ],
                 )),
-            //RaisedButton(onPressed: submit())
           ],
         )
 
