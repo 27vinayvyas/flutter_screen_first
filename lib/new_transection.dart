@@ -1,16 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:submission_first/notifier/list_notifier.dart';
 
 class addTransection extends StatefulWidget {
   @override
   _addTransectionState createState() => _addTransectionState();
 }
 
-int total = 0;
-
 class _addTransectionState extends State<addTransection> {
   String name, source;
   int amount;
+  int total;
+  DateTime date;
+
+  static DateTime selectedDate = DateTime.now();
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
+  Widget dateSelector() {
+    return Container(
+      child: new Column(
+        children: [
+          new Padding(
+            padding: const EdgeInsets.fromLTRB(28, 0, 28, 0),
+            child: Container(
+              color: Color(0xffEDEEF1),
+              child: new Row(
+                children: <Widget>[
+                  IconButton(
+                    icon: Image.asset("assets/Group.png"),
+                    onPressed: () {
+                      _selectDate(context);
+                    },
+                  ),
+                  new Expanded(
+                      child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    height: 47,
+                    child: new TextField(
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Color(0xff6F7FAF),
+                            fontWeight: FontWeight.bold),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: //selectedDate.toString()))
+                                "${selectedDate.toLocal()}".split(' ')[0])),
+                  )),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   getName(name) {
     this.name = name;
@@ -24,7 +78,7 @@ class _addTransectionState extends State<addTransection> {
     this.amount = int.parse(amount);
   }
 
-  createEntry() {
+  createEntry(int value) {
     DocumentReference documentReference =
         Firestore.instance.collection("Transections").document();
 
@@ -32,23 +86,24 @@ class _addTransectionState extends State<addTransection> {
       "Name": name,
       "Source": source,
       "amount": amount,
+      "dateTime": selectedDate.toLocal(),
     };
 
-    documentReference
-        .setData(entry); //.whenComplete(() => print("$name created"));
+    documentReference.setData(entry);
 
-    DocumentReference documentRef =
+    total = value + amount;
+
+    DocumentReference documentRefe =
         Firestore.instance.collection("Transections").document("0");
-    documentRef.get().then((datasnapshot) {
-      total = datasnapshot.data["Total"];
-      total = total + amount;
-      print("kjvdnv" + total.toString());
-      documentRef.setData({"Total": total});
-    });
+
+    documentRefe.setData({"Total": total});
   }
 
   @override
   Widget build(BuildContext context) {
+    List_Notifier list_notifier =
+        Provider.of<List_Notifier>(context, listen: false);
+
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -102,6 +157,7 @@ class _addTransectionState extends State<addTransection> {
                 },
               ),
             ),
+            dateSelector(),
             Padding(
                 padding: EdgeInsets.all(8),
                 child: Row(
@@ -110,7 +166,9 @@ class _addTransectionState extends State<addTransection> {
                     RaisedButton(
                       color: Colors.purple,
                       onPressed: () {
-                        createEntry();
+                        createEntry(list_notifier.total);
+                        //print(total.toString());
+                        list_notifier.setTotal(total);
                         Navigator.pop(context);
                       },
                       child: Text("Submit"),
@@ -118,31 +176,6 @@ class _addTransectionState extends State<addTransection> {
                   ],
                 )),
           ],
-        )
-
-        /*Center(
-        child: RaisedButton(
-          onPressed: () {
-            // Navigate back to first route when tapped.
-          },
-          child: Text('Go back!'),
-        ),
-      ),*/
-        );
+        ));
   }
 }
-/*
-class SingleTransection {
-  String name;
-  String source;
-  int amount;
-  static int total = 0;
-  SingleTransection(name, sources, amount) {
-    this.name = name;
-    this.source = sources;
-    this.amount = amount;
-    total = total + amount;
-    print(SingleTransection.total);
-  }
-}
-*/

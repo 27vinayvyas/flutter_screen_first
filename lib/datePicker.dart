@@ -24,17 +24,14 @@ class _DatePickerBarState extends State<DatePickerBar> {
       });
   }
 
-  var items = [
-    'Working a lot harder',
-    'Being a lot smarter',
-    'Being a self-starter',
-    'Placed in charge of trading charter'
-  ];
+  var items = ["Random Value"];
   @override
   Widget build(BuildContext context) {
-    Date_Notifier date_notifier = Provider.of<Date_Notifier>(context);
-    date_notifier.setDate(selectedDate.toLocal());
-    //print("DATE");
+    Date_Notifier date_notifier =
+        Provider.of<Date_Notifier>(context, listen: false);
+    if (date_notifier.date != selectedDate.toLocal())
+      date_notifier.setDate(selectedDate.toLocal());
+    print("DATE");
     //print(date_notifier.date.toString());
     return Container(
       child: new Column(

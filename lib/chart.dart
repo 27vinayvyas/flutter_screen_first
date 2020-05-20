@@ -1,14 +1,19 @@
+// Implements the complete chart component along with the
+//date bar (which works as axis of chart)
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:submission_first/notifier/chart_list_sync_notifier.dart';
 import 'package:submission_first/notifier/date_notifier.dart';
+import 'dart:core';
 
-class LineChartSample2 extends StatefulWidget {
+class ExpenseLineChart extends StatefulWidget {
   @override
-  _LineChartSample2State createState() => _LineChartSample2State();
+  _ExpenseLineChartState createState() => _ExpenseLineChartState();
 }
 
-class _LineChartSample2State extends State<LineChartSample2> {
+class _ExpenseLineChartState extends State<ExpenseLineChart> {
   List<Color> gradientColors = [
     const Color(0xff724AEA),
   ];
@@ -18,24 +23,53 @@ class _LineChartSample2State extends State<LineChartSample2> {
   @override
   Widget build(BuildContext context) {
     Date_Notifier date_notifier = Provider.of<Date_Notifier>(context);
+    Chart_Notifier chart_notifier = Provider.of<Chart_Notifier>(context);
 
     return Consumer<Date_Notifier>(builder: (context, date, child) {
-      print("date");
-      return Column(children: <Widget>[
-        Expanded(
-          child: Container(
-            width: double.infinity,
-            child: LineChart(
-              mainData(),
-            ),
-          ),
+      return Expanded(
+        child: Container(
+          height: 50,
+          child: Column(children: <Widget>[
+            Consumer<Chart_Notifier>(builder: (context, chart, child) {
+              return Expanded(
+                child: Container(
+                  width: double.infinity,
+                  child: LineChart(
+                    mainData(date.date, chart.chartList),
+                  ),
+                ),
+              );
+            }),
+            labels(date.date.toString()),
+          ]),
         ),
-        labels(date.date.toString()),
-      ]);
+      );
     });
   }
 
-  LineChartData mainData() {
+// Fl_Chart Implementation
+// Initial value corresponds to current date
+// Can Be updated using datePicker Widget
+
+  LineChartData mainData(DateTime date, Map<DateTime, int> chartList) {
+    List<FlSpot> spotPoints = [];
+    int day = int.parse(date.toString().substring(8, 10));
+    spotPoints.add(FlSpot(0, (1).toDouble()));
+    for (int i = 1; i <= 7; i++) {
+      DateTime d = new DateTime(date.year, date.month, i + day);
+      //print(i.toString());
+      if (chartList.containsKey(d)) {
+        //print("IF");
+        //print(d.toString());
+        //print(chartList[d].toString());
+        spotPoints.add(
+            FlSpot(-0.5 + i.toDouble(), (chartList[d] / 1000 + 1).toDouble()));
+      } else {
+        spotPoints.add(FlSpot(-0.5 + i.toDouble(), (1).toDouble()));
+      }
+    }
+    spotPoints.add(FlSpot(8, (1).toDouble()));
+
     return LineChartData(
       gridData: FlGridData(
         show: false,
@@ -69,20 +103,12 @@ class _LineChartSample2State extends State<LineChartSample2> {
         }).toList();
       }),
       minX: 0,
-      maxX: 11,
+      maxX: 7,
       minY: 0,
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
+          spots: spotPoints,
           isCurved: true,
           colors: gradientColors,
           barWidth: 2.5,
@@ -100,6 +126,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
       ],
     );
   }
+
+// Bottom Row of Chart
 
   Container labels(String dateTime) {
     //String date = dateTime.toString();
@@ -122,85 +150,22 @@ class _LineChartSample2State extends State<LineChartSample2> {
       ]),
     );
   }
-}
 
-Column ovel(String date) {
-  if (date.length == 1) date = '0' + date;
-  return Column(children: <Widget>[
-    ClipOval(
-      child: Container(
-          color: Color(0xffEDEEF1),
-          padding: EdgeInsets.all(10),
-          child: Text((date),
-              style: TextStyle(
-                  color: Color(0xff6F7FAF), fontWeight: FontWeight.bold))),
-    ),
-    Text(
-      "Fri",
-      style: TextStyle(color: Color(0xff6F7FAF), fontSize: 12),
-    ),
-  ]);
-}
-
-/*
-import 'dart:math';
-// EXCLUDE_FROM_GALLERY_DOCS_END
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:flutter/material.dart';
-
-class SelectionLineHighlight extends StatelessWidget {
-  final List<charts.Series> seriesList;
-  final bool animate;
-
-  SelectionLineHighlight(this.seriesList, {this.animate});
-
-  /// Creates a [LineChart] with sample data and no transition.
-  factory SelectionLineHighlight.withSampleData() {
-    return new SelectionLineHighlight(
-      _createSampleData(),
-      // Disable animations for image tests.
-      animate: false,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new charts.LineChart(seriesList, animate: animate, behaviors: [
-      new charts.LinePointHighlighter(
-          showHorizontalFollowLine:
-              charts.LinePointHighlighterFollowLineType.none,
-          showVerticalFollowLine:
-              charts.LinePointHighlighterFollowLineType.nearest),
-      new charts.SelectNearest(eventTrigger: charts.SelectionTrigger.tapAndDrag)
+  Column ovel(String date) {
+    if (date.length == 1) date = '0' + date;
+    return Column(children: <Widget>[
+      ClipOval(
+        child: Container(
+            color: Color(0xffEDEEF1),
+            padding: EdgeInsets.all(10),
+            child: Text((date),
+                style: TextStyle(
+                    color: Color(0xff6F7FAF), fontWeight: FontWeight.bold))),
+      ),
+      Text(
+        "Fri",
+        style: TextStyle(color: Color(0xff6F7FAF), fontSize: 12),
+      ),
     ]);
   }
-
-  static List<charts.Series<LinearSales, int>> _createSampleData() {
-    final data = [
-      new LinearSales(0, 5),
-      new LinearSales(1, 25),
-      new LinearSales(2, 50),
-      new LinearSales(3, 40),
-    ];
-
-    return [
-      new charts.Series<LinearSales, int>(
-        id: 'Sales',
-        colorFn: (_, __) => charts.MaterialPalette.purple.shadeDefault,
-        areaColorFn: (_, __) => charts.MaterialPalette.black, //.shadeDefault,
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales,
-        data: data,
-      )
-    ];
-  }
 }
-
-/// Sample linear data type.
-class LinearSales {
-  final int year;
-  final int sales;
-
-  LinearSales(this.year, this.sales);
-}
-*/

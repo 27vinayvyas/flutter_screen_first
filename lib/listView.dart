@@ -1,5 +1,10 @@
+// List of Transections
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:submission_first/notifier/chart_list_sync_notifier.dart';
+import 'package:submission_first/notifier/list_notifier.dart';
 
 class listView extends StatefulWidget {
   @override
@@ -7,16 +12,21 @@ class listView extends StatefulWidget {
 }
 
 class _listViewState extends State<listView> {
-  int total = 0;
-
-  DocumentReference documentRefe =
-      Firestore.instance.collection("Transections").document("0");
-
   @override
   Widget build(BuildContext context) {
-    documentRefe.get().then((datasnapshot) {
-      total = datasnapshot.data["Total"];
-    });
+    List_Notifier notifier = Provider.of<List_Notifier>(context);
+    Chart_Notifier chart_notifier =
+        Provider.of<Chart_Notifier>(context, listen: false);
+
+    if (notifier.flag == 0) {
+      DocumentReference documentRefe =
+          Firestore.instance.collection("Transections").document("0");
+      documentRefe.get().then((datasnapshot) {
+        notifier.setTotal(datasnapshot.data["Total"]);
+      });
+
+      notifier.flag = 1;
+    }
 
     return Expanded(
         flex: 1,
@@ -36,8 +46,10 @@ class _listViewState extends State<listView> {
                   "Total ",
                   style: TextStyle(color: Color(0xff6F7FAF)),
                 ),
-                Text("\u20B9 " + total.toString(),
-                    style: TextStyle(color: Color(0xff6F7FAF))),
+                Consumer<List_Notifier>(
+                    builder: (_, list_notifier, __) => Text(
+                        "\u20B9 " + list_notifier.total.toString(),
+                        style: TextStyle(color: Color(0xff6F7FAF)))),
               ],
             ),
           ),
@@ -52,6 +64,25 @@ class _listViewState extends State<listView> {
                     Firestore.instance.collection("Transections").snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const Text("Loading...");
+
+                  if (chart_notifier.chartList.isEmpty) {
+                    int i;
+                    for (i = 1; i < snapshot.data.documents.length; i++) {
+                      Timestamp t = snapshot.data.documents[i]["dateTime"];
+                      DateTime d = (t as Timestamp).toDate();
+
+                      int am = snapshot.data.documents[i]["amount"];
+                      //print(d.toString());
+
+                      chart_notifier.addEntry(d, am);
+
+                      // print(d.toString());
+                      // print(am.toString());
+                    }
+
+                    chart_notifier.completed();
+                  }
+
                   return ListView.builder(
                     itemCount: snapshot.data.documents.length - 1,
                     itemBuilder: (context, index) {
@@ -108,5 +139,3 @@ class _listViewState extends State<listView> {
         ]));
   }
 }
-
-//Widget listView() {

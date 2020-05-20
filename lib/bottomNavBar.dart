@@ -10,68 +10,6 @@ class _bottomNavBarState extends State<bottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    /*return Container(
-      height: 75,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              Spacer(),
-              Image.asset('assets/Group18.png'),
-              Text(
-                "Goals",
-                style: TextStyle(color: Color(0xffA4AABF), fontSize: 10),
-              ),
-              Spacer(),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Spacer(),
-              Image.asset('assets/Group 449.png'),
-              Text(
-                "Goals",
-                style: TextStyle(color: Color(0xffA4AABF), fontSize: 10),
-              ),
-              Spacer(),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Image.asset('assets/Group 448.png'),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Spacer(),
-              Image.asset('assets/money-bag 1.png'),
-              Text(
-                "Goals",
-                style: TextStyle(color: Color(0xffA4AABF), fontSize: 10),
-              ),
-              Spacer(),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Spacer(),
-              Image.asset('assets/Group 369.png'),
-              Text(
-                "Goals",
-                style: TextStyle(color: Color(0xffA4AABF), fontSize: 10),
-              ),
-              Spacer(),
-            ],
-          )
-        ],
-      ),
-    );*/
-
     return Container(
       height: 80,
       child: Padding(

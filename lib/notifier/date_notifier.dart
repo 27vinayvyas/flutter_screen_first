@@ -1,3 +1,6 @@
+//sharing selected date between datePicker and Chart widget
+
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 class Date_Notifier with ChangeNotifier {
@@ -7,7 +10,9 @@ class Date_Notifier with ChangeNotifier {
 
   void setDate(DateTime dates) {
     date = dates;
-    notifyListeners();
-    print(date);
+
+    Timer(Duration(milliseconds: 5), () {
+      notifyListeners();
+    });
   }
 }
